@@ -78,9 +78,50 @@ const filter_reducer = (state, action) => {
         filters: { ...state.filters, [name]: value },
       };
     case FILTER_PRODUCTS:
-      //Fiklerfing TODO:
+      const { all_products } = state;
+      const { text, category, company, color, price, shipping } = state.filters;
+      let temporalProducts = [...all_products];
+      if (text)
+        temporalProducts = temporalProducts.filter(({ name }) =>
+          name.toLowerCase().startsWith(text)
+        );
+      if (category !== "all")
+        temporalProducts = temporalProducts.filter(
+          (product) => product.category === category
+        );
+      if (company !== "all")
+        temporalProducts = temporalProducts.filter(
+          (product) => product.company === company
+        );
+      if (color !== "all")
+        temporalProducts = temporalProducts.filter((product) =>
+          product.colors.find((c) => c === color)
+        );
+      if (shipping)
+        temporalProducts = temporalProducts.filter(
+          (product) => product.shipping === true
+        );
+      //price
+      temporalProducts = temporalProducts.filter(
+        (product) => product.price <= price
+      );
+
       return {
         ...state,
+        filtered_products: temporalProducts,
+      };
+    case CLEAR_FILTERS:
+      return {
+        ...state,
+        filters: {
+          ...state.filters,
+          text: "",
+          company: "all",
+          category: "all",
+          color: "all",
+          price: state.filters.max_price,
+          shipping: false,
+        },
       };
     default:
       throw new Error(`No Matching "${action.type}" - action type`);
