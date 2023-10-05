@@ -11,7 +11,6 @@ import {
   CLEAR_FILTERS,
 } from "../actions";
 import { useProductsContext } from "./products_context";
-import { all } from "axios";
 
 const initialState = {
   filtered_products: [],
